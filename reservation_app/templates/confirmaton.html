@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Réservation confirmée</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url("{% static 'images/salle1_reunion.png' %}");
+      background-size: cover;
+      background-position: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    nav {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ffcc00;
+      cursor: pointer;
+    }
+
+    a {
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <a href="{% url 'base' %}">Home</a>
+    <a href="{% url 'auth' %}">Login</a>
+    <a href="{% url 'rechercher' %}">Rechercher</a>
+    <a href="{% url 'impression' %}">Calendrier</a>
+
+  </nav>
+  <h1>Réservation enregistrée avec succès ! <a href="{% url 'reserver' %}">Faire une autre réservation</a></h1>
+
+</body>
+
+</html>

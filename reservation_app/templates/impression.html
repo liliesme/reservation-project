@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Planning des salles - {{ periode|title }}</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url("{% static 'images/salle1_reunion.png' %}") no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
+
+    nav {
+      background-color: rgba(0, 0, 0, 0.85);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffcc00;
+    }
+
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 40px;
+    }
+
+    th {
+      color: black;
+      padding: 8px;
+      border: 1px solid
+    }
+
+    td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    button {
+      margin-top: 20px;
+    }
+
+    @media print {
+      button {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <a href="{% url 'base' %}">Accueil</a>
+    <a href="{% url 'auth' %}">Connexion</a>
+    <a href="{% url 'rechercher' %}">Rechercher</a>
+    <a href="{% url 'reserver' %}">Reserver </a>
+    <a href="{% url 'impression' %}">Calendrier</a>
+
+  </nav>
+  <h1>Planning des salles</h1>
+  <h3>Période : {{ debut|date:"d/m/Y" }} - {{ fin|date:"d/m/Y" }} ({{ periode }})</h3>
+
+  {% for salle, reservations in planning.items %}
+  <h2>{{ salle.nom }} (Capacité: {{ salle.capacite }})</h2>
+  {% if reservations %}
+  <table>
+    <thead>
+      <tr>
+        <th>Employé</th>
+        <th>Date début</th>
+        <th>Date fin</th>
+        <th>Équipements</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reservations %}
+      <tr>
+        <td>{{ r.employe.user.username }}</td>
+        <td>{{ r.date_debut|date:"d/m/Y H:i" }}</td>
+        <td>{{ r.date_fin|date:"d/m/Y H:i" }}</td>
+        <td>
+          {% for eq in r.equipements.all %}
+          {{ eq.nom }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+          Aucun
+          {% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Aucune réservation pour cette salle dans cette période.</p>
+  {% endif %}
+  {% empty %}
+  <p>Aucune salle trouvée.</p>
+  {% endfor %}
+
+  <button onclick="window.print()">Imprimer</button>
+</body>
+
+</html>
