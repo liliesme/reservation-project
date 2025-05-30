@@ -91,8 +91,8 @@
     <a href="{% url 'auth' %}">Login</a>
     <a href="{% url 'rechercher' %}">Rechercher</a>
     <a href="{% url 'impression' %}">Calendrier</a>
-
   </nav>
+
   <div class="container">
     <h2>Réserver une salle</h2>
     <form method="post" action="{% url 'reserver' %}">
@@ -100,11 +100,10 @@
 
       <label for="room">Salle à réserver :</label>
       <select id="room" name="room" required>
-
         <option value="">-- Choisir une salle --</option>
-        <option value="1">Salle 1</option>
-        <option value="2">Salle 2</option>
-
+        {% for salle in salles %}
+        <option value="{{ salle.id }}">{{ salle.nom }} (Capacité : {{ salle.capacite }})</option>
+        {% endfor %}
       </select>
 
       <label for="date">Date :</label>
@@ -118,13 +117,9 @@
 
       <label for="equipment">Équipements nécessaires :</label>
       <select id="equipment" name="equipment" multiple>
-        <option value="1">Projecteur</option>
-        <option value="2">Tableau blanc</option>
-        <option value="3">Micro</option>
-        <option value="4">Téléviseurs</option>
-        <option value="5">Postes téléphoniques</option>
-        <option value="6">Araignées pour conf-call</option>
-        <option value="7">Paper board</option>
+        {% for equipement in equipements %}
+        <option value="{{ equipement.id }}">{{ equipement.nom }} ({{ equipement.type }})</option>
+        {% endfor %}
       </select>
 
       <label for="participants">Inviter des participants (emails séparés par des virgules) :</label>

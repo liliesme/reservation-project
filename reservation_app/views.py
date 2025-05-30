@@ -28,10 +28,15 @@ def reserver(request):
 
         reservation.equipements.set(request.POST.getlist('equipment'))
 
-        return render(request, 'confirmaton.html')  
+        return render(request, 'confirmaton.html') 
 
-    return render(request, 'reservation.html')
-
+    
+    salles = Salle.objects.all()
+    equipements = Equipement.objects.all()
+    return render(request, 'reservation.html', {
+        'salles': salles,
+        'equipements': equipements
+    })
 
 def auth(request):
     error = None 
@@ -51,10 +56,8 @@ def confirmation(request):
     return render(request,'confirmaton.html')
 
 
-
 def rechercher(request):
     salles_disponibles = []
-    equipements = Equipement.objects.values_list('type', flat=True).distinct()
 
     if request.method == 'POST':
         date = request.POST.get('date')
@@ -62,7 +65,6 @@ def rechercher(request):
         heure_fin = request.POST.get('end_time')
         nom_salle = request.POST.get('nom_salle')
         capacite = request.POST.get('capacite')
-        type_equipement = request.POST.get('type_equipement')
 
         if date and heure_debut and heure_fin:
             debut = datetime.strptime(f"{date} {heure_debut}", "%Y-%m-%d %H:%M")
@@ -82,23 +84,15 @@ def rechercher(request):
                     date_fin__gt=debut
                 )
                 if not conflits.exists():
-                    # Si l’utilisateur a demandé un type d’équipement, on vérifie
-                    if type_equipement:
-                        if salle.equipements.filter(type=type_equipement).exists():
-                            salles_disponibles.append(salle)
-                    else:
-                        salles_disponibles.append(salle)
+                    salles_disponibles.append(salle)
 
     return render(request, 'rechercher.html', {
         'salles_disponibles': salles_disponibles,
-        'equipements': equipements,
     })
 
 
-
 def impression(request):
-    periode = 'semaine'  # ou 'mois' si tu veux changer
-
+    periode = 'semaine' 
     today = now().date()
 
     if periode == 'mois':
@@ -111,10 +105,10 @@ def impression(request):
         debut = today - timedelta(days=today.weekday())
         fin = debut + timedelta(days=6)
 
-    # Récupérer toutes les salles
+    
     salles = Salle.objects.all()
 
-    # Pour chaque salle, récupérer ses réservations dans la période
+    
     planning = {}
     for salle in salles:
         reservations = Reservation.objects.filter(

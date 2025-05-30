@@ -150,12 +150,7 @@
       <label>Capacité minimale :</label>
       <input type="number" name="capacite" min="1">
 
-      <label>Type d’équipement requis :</label>
-      <select name="type_equipement">
-        <option value="">-- Aucun --</option>
-        {% for eq in equipements %}
-        <option value="{{ eq }}">{{ eq }}</option>
-        {% endfor %}
+
       </select>
 
       <button type="submit">Rechercher</button>
